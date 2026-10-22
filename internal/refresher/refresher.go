@@ -281,7 +281,6 @@ func (r *Refresher) sweep(ctx context.Context, all bool) (Summary, error) {
 				}
 			}
 		}
-		rateLimitLogged = false
 		rateLimitBackoff = initialRateLimitBackoff
 		if err != nil {
 			// A busy registry is not a failure: the contract stays stale

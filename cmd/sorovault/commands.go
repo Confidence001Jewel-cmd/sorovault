@@ -98,11 +98,12 @@ func loadContractIDs(args []string, path string, input io.Reader) ([]string, err
 
 	reader := input
 	if path != "-" {
+		// #nosec G304 -- the CLI operator explicitly selects this input file.
 		file, err := os.Open(path)
 		if err != nil {
 			return nil, fmt.Errorf("opening contract ID file %s: %w", path, err)
 		}
-		defer file.Close()
+		defer func() { _ = file.Close() }()
 		reader = file
 	}
 

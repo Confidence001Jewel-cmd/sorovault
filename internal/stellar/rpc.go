@@ -184,7 +184,8 @@ func (f *RPCFetcher) singleEntry(ctx context.Context, key xdr.LedgerKey) (*proto
 
 func isRateLimitError(err error) bool {
 	message := strings.ToLower(err.Error())
-	return strings.Contains(message, "429") ||
+	return strings.Contains(message, "http status 429") ||
+		strings.Contains(message, "status 429") ||
 		strings.Contains(message, "rate limit") ||
 		strings.Contains(message, "too many requests")
 }
