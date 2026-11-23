@@ -270,3 +270,27 @@ func BenchmarkMigrationVersion(b *testing.B) {
 		}
 	}
 }
+
+// BenchmarkMigrateDown measures the cost of rolling back migrations
+// to version zero with golang-migrate.
+// It needs TEST_DATABASE_URL:
+//
+//	TEST_DATABASE_URL=... go test -run '^$' -bench BenchmarkMigrateDown ./internal/store/
+func BenchmarkMigrateDown(b *testing.B) {
+	url := os.Getenv(TestDatabaseURLEnv)
+	if url == "" {
+		b.Skip(TestDatabaseURLEnv + " not set")
+	}
+
+	if err := store.Migrate(url); err != nil {
+		b.Fatal(err)
+	}
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if err := store.MigrateDown(url); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
