@@ -273,9 +273,22 @@ $ go run ./cmd/sorovault add CDZZXVGUCLBUTE3WDD6TF2NXPTBPOYTVPPBBIZMSPVIQLUG226X
 $ go run ./cmd/sorovault serve
 ```
 
+Check that the server is answering before going further:
+
+```console
+$ curl -s localhost:8080/healthz | jq .status
+"ok"
+```
+
 ## Configuration
 
-All configuration is environment variables. Only `DATABASE_URL` (or the path in `DATABASE_URL_FILE`, read from the filesystem) is required.
+All configuration is environment variables. Only `DATABASE_URL` (or the path in `DATABASE_URL_FILE`, read from the filesystem) is required. For example:
+
+```console
+$ export DATABASE_URL='postgres://sorovault@localhost:5432/sorovault?sslmode=disable'
+$ sorovault config show --json | jq .DATABASE_URL
+"postgres://sorovault@localhost:5432/sorovault?sslmode=disable"
+```
 
 ### A YAML file as the base layer
 
@@ -297,6 +310,12 @@ rpc_timeout: 30s
 refresh_interval: 6h
 read_only: true
 cors_origins: "https://dashboard.example.com"
+```
+
+Then start the server with that file:
+
+```console
+$ sorovault --config sorovault.yaml serve
 ```
 
 Run `sorovault config show` to print the effective configuration — file,
@@ -357,6 +376,12 @@ A contract that fails to refresh — expired, or an RPC error — is logged and
 skipped, and the sweep carries on. One sweep runs at startup and then one per
 interval; a sweep in progress at shutdown is cancelled before the database is
 closed.
+
+For example, to re-check every registered contract every six hours:
+
+```console
+$ REFRESH_INTERVAL=6h sorovault serve
+```
 
 ### Metrics
 
