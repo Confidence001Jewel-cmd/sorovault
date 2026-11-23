@@ -294,3 +294,35 @@ func BenchmarkMigrateDown(b *testing.B) {
 		}
 	}
 }
+
+// BenchmarkMigrate measures the cost of applying migrations
+// with golang-migrate.
+// It needs TEST_DATABASE_URL:
+//
+//	TEST_DATABASE_URL=... go test -run '^$' -bench BenchmarkMigrate ./internal/store/
+func BenchmarkMigrate(b *testing.B) {
+	url := os.Getenv(TestDatabaseURLEnv)
+	if url == "" {
+		b.Skip(TestDatabaseURLEnv + " not set")
+	}
+
+	if err := store.MigrateDown(url); err != nil {
+		b.Fatal(err)
+	}
+	b.Cleanup(func() {
+		_ = store.Migrate(url)
+	})
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if err := store.Migrate(url); err != nil {
+			b.Fatal(err)
+		}
+		b.StopTimer()
+		if err := store.MigrateDown(url); err != nil {
+			b.Fatal(err)
+		}
+		b.StartTimer()
+	}
+}
