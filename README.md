@@ -383,6 +383,15 @@ For example, to re-check every registered contract every six hours:
 $ REFRESH_INTERVAL=6h sorovault serve
 ```
 
+To also receive webhook notifications when a contract is upgraded:
+
+```console
+$ REFRESH_INTERVAL=6h \
+  REFRESH_WEBHOOK_URL=https://hooks.example.com/sorovault \
+  REFRESH_WEBHOOK_SECRET=my-secret-key \
+  sorovault serve
+```
+
 ### Metrics
 
 Set `METRICS_ADDR` (for example `127.0.0.1:9090`) and `sorovault serve` exposes
