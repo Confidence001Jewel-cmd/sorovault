@@ -330,7 +330,7 @@ back out of what it became. `--json` prints the same rows for scripts.
 | `MAX_CONCURRENT_REGISTRATIONS` | `4` | how many registrations and refreshes run at once |
 | `DATABASE_MAX_CONNS` | pgx's own (the greater of 4 or the CPU count) | most connections the pool holds open |
 | `DATABASE_MIN_CONNS` | `0` | connections the pool keeps open between requests |
-| `RPC_URL` | `https://soroban-testnet.stellar.org` | Stellar RPC endpoint |
+| `RPC_URL` | `https://soroban-testnet.stellar.org` | Stellar RPC endpoint contract code and upgrade events are read from (must be non-empty; e.g. `https://rpc-futurenet.stellar.org` for futurenet) |
 | `NETWORK_PASSPHRASE` | `Test SDF Network ; September 2015` | the network you expect `RPC_URL` to serve (e.g. `Public Global Stellar Network ; September 2015` for mainnet) |
 | `HTTP_ADDR` | `:8080` | listen address |
 | `METRICS_ADDR` | — (off) | separate `host:port` serving Prometheus metrics at `GET /metrics`; must differ from `HTTP_ADDR`. See [Metrics](#metrics) |
@@ -353,6 +353,13 @@ back out of what it became. `--json` prints the same rows for scripts.
 | `READ_ONLY` | `false` | refuse every write endpoint with 405; reads and automatic refreshes stay on (`--read-only` overrides) |
 | `API_TOKENS` | — | comma-separated bearer tokens the write endpoints accept; unset keeps writes public |
 | `CONFIG_PATH` | — | YAML config file whose values sit under the environment (`--config` names it explicitly) |
+
+`RPC_URL` sets the Stellar RPC endpoint that SoroVault reads contract code,
+network passphrases, and upgrade events from (default:
+`https://soroban-testnet.stellar.org`). It must be non-empty at startup. For
+example, set `RPC_URL=https://rpc-futurenet.stellar.org` for futurenet or point
+it at a dedicated mainnet RPC provider (and update `NETWORK_PASSPHRASE` to
+match).
 
 `NETWORK_PASSPHRASE` is a guard, not a source of truth (default:
 `Test SDF Network ; September 2015`). SoroVault reads the real passphrase from
