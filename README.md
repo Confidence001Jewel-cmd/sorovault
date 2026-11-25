@@ -1527,6 +1527,9 @@ Contributions welcome. Deliberately **not** built yet:
   and compile-in-CI test pattern.
 - **Resolving contract names.** The schema carries a `name`, but nothing
   populates it yet.
+- **Godoc examples.** `Render` in `internal/model/type.go` has tests but no
+  runnable example. Adding an `ExampleRender` function with a `// Output:`
+  comment to the package test file would show usage in godoc and run as a test.
 Explicitly out of scope: authentication, and any write operation against
 contracts themselves. SoroVault reads chain state; it never sends a transaction.
 
